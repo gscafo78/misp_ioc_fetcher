@@ -84,20 +84,26 @@ def main():
         default=os.getenv('MISP_VERIFY_CERT', 'false').lower() == 'true',
         help='Verify SSL certificates (default: False or based on MISP_VERIFY_CERT env var).'
         )
+    # Get the directory of the script to make paths relative to it
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    default_ip_file = os.path.join(script_dir, 'ioc', 'ioc_ips.txt')
+    default_urls_file = os.path.join(script_dir, 'ioc', 'ioc_urls.txt')
+    default_hashes_file = os.path.join(script_dir, 'ioc', 'ioc_hashes.txt')
+
     parser.add_argument(
-        '--output-ip-file', 
-        default=os.getenv('OUTPUT_IP_FILE', 'ioc_ips.txt'),
-        help='Output file path for the IOC IPs (default: ioc_ips.txt or OUTPUT_FILE env var).'
+        '--output-ip-file',
+        default=os.getenv('OUTPUT_IP_FILE', default_ip_file),
+        help=f'Output file path for the IOC IPs (default: {default_ip_file} or OUTPUT_IP_FILE env var).'
         )
     parser.add_argument(
-        '--output-urls-file', 
-        default=os.getenv('OUTPUT_URLS_FILE', 'ioc_urls.txt'),
-        help='Output file path for the IOC URLs (default: ioc_urls.txt or OUTPUT_URLS_FILE env var).'
+        '--output-urls-file',
+        default=os.getenv('OUTPUT_URLS_FILE', default_urls_file),
+        help=f'Output file path for the IOC URLs (default: {default_urls_file} or OUTPUT_URLS_FILE env var).'
         )
     parser.add_argument(
-        '--output-hashes-file', 
-        default=os.getenv('OUTPUT_HASHES_FILE', 'ioc_hashes.txt'),
-        help='Output file path for the IOC hashes (default: ioc_hashes.txt or OUTPUT_HASHES_FILE env var).'
+        '--output-hashes-file',
+        default=os.getenv('OUTPUT_HASHES_FILE', default_hashes_file),
+        help=f'Output file path for the IOC hashes (default: {default_hashes_file} or OUTPUT_HASHES_FILE env var).'
         )
     parser.add_argument(
         '--verbose', 
