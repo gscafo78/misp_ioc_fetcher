@@ -34,13 +34,13 @@ def run(logger, args, client):
     else:
         logger.info(f"Successfully saved {len(ips)} IPs to {args.output_ip_file}")
 
-    # Fetch and save URLs
-    urls = client.get_malicious_urls(args.output_urls_file)
+    # # Fetch and save URLs
+    # urls = client.get_malicious_urls(args.output_urls_file)
 
-    if not urls:
-        logger.warning("No URLs found.")
-    else:
-        logger.info(f"Successfully saved {len(urls)} URLs to {args.output_urls_file}")
+    # if not urls:
+    #     logger.warning("No URLs found.")
+    # else:
+    #     logger.info(f"Successfully saved {len(urls)} URLs to {args.output_urls_file}")
 
     # Fetch and save hashes
     hashes = client.get_malicious_hashes(args.output_hashes_file)

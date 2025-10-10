@@ -29,3 +29,4 @@ socialbot.log
 .AppleDouble
 .LSOverride
 prompt.txt
+docker-compose_prod.yml
