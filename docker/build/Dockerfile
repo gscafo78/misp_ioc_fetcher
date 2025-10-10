@@ -6,7 +6,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends tzdata \
                                                curl \
                                                python3-dev \
-                                               build-essential \
+                                               build-essential && \
     rm -rf /var/lib/apt/lists/*
 
 # Improve container logging
