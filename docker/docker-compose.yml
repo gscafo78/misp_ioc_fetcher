@@ -1,0 +1,10 @@
+services:
+  misp-ioc-fetcher:
+    build:
+      context: ..
+      dockerfile: docker/build/Dockerfile
+    volumes:
+      - ./ioc:/app/ioc
+    env_file:
+      - .env
+    restart: always
