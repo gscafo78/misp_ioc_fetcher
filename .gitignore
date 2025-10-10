@@ -17,6 +17,7 @@ venv/
 devel/
 env.bak/
 venv.bak/
+ioc/
 
 # Config file
 settings.json

@@ -27,14 +27,17 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN mkdir -p ioc
 
 # Define environment variable (optional, can be overridden at runtime)
-ENV MISP_URL=""
-ENV MISP_APY_KEY=""
-ENV MISP_START_DATE=""
-ENV MISP_VERIFY_CERT="false"
-ENV OUTPUT_IP_FILE="ioc/ioc_ips.txt"
-ENV OUTPUT_URLS_FILE="ioc/ioc_urls.txt"
-ENV OUTPUT_HASHES_FILE="ioc/ioc_hashes.txt"
-ENV UPDATE_TIME="0"
+# ENV MISP_URL=""
+# ENV MISP_APY_KEY=""
+# ENV MISP_START_DATE=""
+# ENV MISP_VERIFY_CERT="false"
+# ENV OUTPUT_IP_FILE="ioc/ioc_ips.txt"
+# ENV OUTPUT_URLS_FILE="ioc/ioc_urls.txt"
+# ENV OUTPUT_HASHES_FILE="ioc/ioc_hashes.txt"
+# ENV UPDATE_TIME="0"
+
+# Create a volume for the ioc directory to persist output files
+VOLUME ["/app/ioc"]
 
 # Run app.py when the container launches
 CMD ["python", "app.py"]
