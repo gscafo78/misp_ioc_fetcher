@@ -4,6 +4,7 @@ FROM python:3.11.12-slim
 # Install required packages using apt (not apk, which is for Alpine)
 RUN apt-get update && \
     apt-get install -y --no-install-recommends tzdata \
+                                               git \
                                                curl \
                                                python3-dev \
                                                build-essential && \
