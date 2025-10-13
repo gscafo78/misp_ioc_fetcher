@@ -1,5 +1,6 @@
 services:
   misp-ioc-fetcher:
+    image: mispiocfetcher:latest
     build:
       context: ..
       dockerfile: docker/build/Dockerfile
