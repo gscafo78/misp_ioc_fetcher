@@ -88,23 +88,23 @@ def main():
         )
 
     parser.add_argument(
-        '--output-ip', 
-        action='store_true', 
-        default=os.getenv('OUTPUT_IP', 'false').lower() == 'true',
+        '--output-ip',
+        action='store_true',
+        default=os.getenv('OUTPUT_IP', 'true').lower() == 'true',
         help='The Output ip for generate list of IP. Can be set via OUTPUT_IP env var.'
         )
 
     parser.add_argument(
-        '--output-hashes', 
-        action='store_true', 
-        default=os.getenv('OUTPUT_HASHES', 'false').lower() == 'false',
+        '--output-hashes',
+        action='store_true',
+        default=os.getenv('OUTPUT_HASHES', 'false').lower() == 'true',
         help='The Output hash for generate list of hash. Can be set via OUTPUT_HASHES env var.'
         )
 
     parser.add_argument(
-        '--output-urls', 
-        action='store_true', 
-        default=os.getenv('OUTPUT_URLS', 'false').lower() == 'false',
+        '--output-urls',
+        action='store_true',
+        default=os.getenv('OUTPUT_URLS', 'false').lower() == 'true',
         help='The Output URLs for generate list of URLs. Can be set via OUTPUT_URLS env var.'
         )
 
@@ -167,6 +167,9 @@ def main():
 
     # Create MISP client instance
     client = MISPClient(args.misp_url, args.apykey, args.start_date, args.verycert)
+
+    # Log debug recap of args
+    logger.debug(f"Args recap: misp_url={args.misp_url}, \napykey={'*' * len(args.apykey) if args.apykey else None}, \nstart_date={args.start_date}, \nverycert={args.verycert}, \noutput_ip={args.output_ip}, \noutput_urls={args.output_urls}, \noutput_hashes={args.output_hashes}, \noutput_ip_file={args.output_ip_file}, \noutput_urls_file={args.output_urls_file}, \noutput_hashes_file={args.output_hashes_file}, \nupdate_time={args.update_time}")
 
     # Run the fetching once
     try:
