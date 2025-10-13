@@ -14,7 +14,7 @@ import time
 from datetime import datetime, timedelta
 from mispclient.mispclient import MISPClient
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 # ------------------------------------------------------------------------------
 # Module‑level logging configuration
@@ -26,29 +26,42 @@ def run(logger, args, client):
     """
     Run the fetching of IOCs from MISP.
     """
-    # Fetch and save IPs
-    ips = client.get_malicious_ips(args.output_ip_file)
+    
+    if args.output_ip:
+        logger.info("Fetching IPs enabled.")
+        # Fetch and save IPs
+        ips = client.get_malicious_ips(args.output_ip_file)
 
-    if not ips:
-        logger.warning("No IPs found.")
+        if not ips:
+            logger.warning("No IPs found.")
+        else:
+            logger.info(f"Successfully saved {len(ips)} IPs to {args.output_ip_file}")
     else:
-        logger.info(f"Successfully saved {len(ips)} IPs to {args.output_ip_file}")
+        logger.info("Fetching IPs not enabled.")
 
-    # # Fetch and save URLs
-    # urls = client.get_malicious_urls(args.output_urls_file)
+    if args.output_urls:
+        logger.info("Fetching URLs enabled.")
+        # Fetch and save URLs
+        urls = client.get_malicious_urls(args.output_urls_file)
 
-    # if not urls:
-    #     logger.warning("No URLs found.")
-    # else:
-    #     logger.info(f"Successfully saved {len(urls)} URLs to {args.output_urls_file}")
-
-    # Fetch and save hashes
-    hashes = client.get_malicious_hashes(args.output_hashes_file)
-
-    if not hashes:
-        logger.warning("No hashes found.")
+        if not urls:
+            logger.warning("No URLs found.")
+        else:
+            logger.info(f"Successfully saved {len(urls)} URLs to {args.output_urls_file}")
     else:
-        logger.info(f"Successfully saved {len(hashes)} hashes to {args.output_hashes_file}")
+        logger.info("Fetching URLs not enabled.")   
+    
+    if args.output_hashes:
+        logger.info("Fetching hashes enabled.")    
+        # Fetch and save hashes
+        hashes = client.get_malicious_hashes(args.output_hashes_file)
+
+        if not hashes:
+            logger.warning("No hashes found.")
+        else:
+            logger.info(f"Successfully saved {len(hashes)} hashes to {args.output_hashes_file}")
+    else:
+        logger.info("Fetching hashes not enabled.")
 
 def main():
     """
@@ -73,16 +86,38 @@ def main():
         default=os.getenv('MISP_APY_KEY'),
         help='The API key for MISP authentication. Can be set via MISP_APY_KEY env var.'
         )
+
+    parser.add_argument(
+        '--output-ip', 
+        action='store_true', 
+        default=os.getenv('OUTPUT_IP', 'false').lower() == 'true',
+        help='The Output ip for generate list of IP. Can be set via OUTPUT_IP env var.'
+        )
+
+    parser.add_argument(
+        '--output-hashes', 
+        action='store_true', 
+        default=os.getenv('OUTPUT_HASHES', 'false').lower() == 'true',
+        help='The Output hash for generate list of hash. Can be set via OUTPUT_HASHES env var.'
+        )
+
+    parser.add_argument(
+        '--output-urls', 
+        action='store_true', 
+        default=os.getenv('OUTPUT_URLS', 'false').lower() == 'true',
+        help='The Output URLs for generate list of URLs. Can be set via OUTPUT_URLS env var.'
+        )
+
     parser.add_argument(
         '--start-date', 
         default=os.getenv('MISP_START_DATE', (datetime.now() - timedelta(days=365*2)).strftime('%Y-%m-%d')),
         help='Start date for the query in YYYY-MM-DD format (default: 2 years ago or MISP_START_DATE env var).'
         )
     parser.add_argument(
-        '--verycert', 
-        action='store_true', 
-        default=os.getenv('MISP_VERIFY_CERT', 'false').lower() == 'true',
-        help='Verify SSL certificates (default: False or based on MISP_VERIFY_CERT env var).'
+        '--verycert',
+        action='store_true',
+        default=os.getenv('MISP_VERIFY_CERT', '').lower() == 'true',
+        help='Verify SSL certificates (default: False, or True if MISP_VERIFY_CERT env var is set to "true").'
         )
     # Get the directory of the script to make paths relative to it
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -152,8 +187,6 @@ def main():
         except KeyboardInterrupt:
             logger.info("Interrupted by user")
     
-    
-
 
 if __name__ == "__main__":
     main()
