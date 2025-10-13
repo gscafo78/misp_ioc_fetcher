@@ -37,6 +37,9 @@ The application will start fetching IOCs from your MISP instance and save them t
 | `MISP_URL` | MISP base URL (required) | - |
 | `MISP_VERIFY_CERT` | Verify SSL certificates | `false` |
 | `MISP_START_DATE` | Start date for IOC queries (YYYY-MM-DD) | 2 years ago |
+| `OUTPUT_IP` | Enable output for IPs | `false` |
+| `OUTPUT_URLS` | Enable output for URLs | `false` |
+| `OUTPUT_HASHES` | Enable output for hashes | `false` |
 | `OUTPUT_IP_FILE` | Path for IP output file | `ioc/ioc_ips.txt` |
 | `OUTPUT_URLS_FILE` | Path for URLs output file | `ioc/ioc_urls.txt` |
 | `OUTPUT_HASHES_FILE` | Path for hashes output file | `ioc/ioc_hashes.txt` |
@@ -76,11 +79,11 @@ docker-compose run --rm misp-ioc-fetcher python app.py --verbose
 
 ## Output Files
 
-The application generates three output files in the `./ioc` directory:
+The application can generate up to three output files in the `./ioc` directory based on the selected options:
 
-- `ioc_ips.txt`: Malicious IP addresses
-- `ioc_urls.txt`: Malicious URLs
-- `ioc_hashes.txt`: Malicious file hashes (MD5, SHA1, SHA256)
+- `ioc_ips.txt`: Malicious IP addresses (if `OUTPUT_IP=true`)
+- `ioc_urls.txt`: Malicious URLs (if `OUTPUT_URLS=true`)
+- `ioc_hashes.txt`: Malicious file hashes (MD5, SHA1, SHA256) (if `OUTPUT_HASHES=true`)
 
 Each file includes a timestamp header indicating when it was last updated.
 

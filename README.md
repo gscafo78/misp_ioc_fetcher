@@ -8,6 +8,7 @@ A Python script to fetch malicious Indicators of Compromise (IOCs) such as IP ad
 - Fetches malicious URLs
 - Fetches malicious hashes (MD5, SHA1, SHA256)
 - Saves IOCs to text files
+- Supports selective output for IPs, URLs, and hashes
 - Supports periodic updates
 - Configurable via environment variables or command-line arguments
 
@@ -37,6 +38,9 @@ Configure the script using environment variables or command-line arguments:
 - `MISP_API_KEY`: The API key for MISP authentication
 - `MISP_START_DATE`: Start date for queries in YYYY-MM-DD format (default: 2 years ago)
 - `MISP_VERIFY_CERT`: Verify SSL certificates (default: false)
+- `OUTPUT_IP`: Enable output for IPs (default: true)
+- `OUTPUT_URLS`: Enable output for URLs (default: false)
+- `OUTPUT_HASHES`: Enable output for hashes (default: false)
 - `OUTPUT_IP_FILE`: Output file for IPs (default: `ioc_ips.txt`)
 - `OUTPUT_URLS_FILE`: Output file for URLs (default: `ioc_urls.txt`)
 - `OUTPUT_HASHES_FILE`: Output file for hashes (default: `ioc_hashes.txt`)
@@ -76,11 +80,11 @@ The script will run once, then update periodically. Press Ctrl+C to stop.
 
 ## Output
 
-The script generates three text files:
+The script can generate up to three text files based on the selected options:
 
-- `ioc_ips.txt`: List of malicious IP addresses
-- `ioc_urls.txt`: List of malicious URLs
-- `ioc_hashes.txt`: List of malicious hashes
+- `ioc_ips.txt`: List of malicious IP addresses (if `--output-ip` or `OUTPUT_IP=true`)
+- `ioc_urls.txt`: List of malicious URLs (if `--output-urls` or `OUTPUT_URLS=true`)
+- `ioc_hashes.txt`: List of malicious hashes (if `--output-hashes` or `OUTPUT_HASHES=true`)
 
 Each file includes a timestamp of the last update.
 
@@ -95,7 +99,7 @@ Giovanni Scafetta
 
 ## Version
 
-1.0.0
+1.0.1
 
 ## License
 

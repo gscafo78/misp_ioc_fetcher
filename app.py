@@ -97,14 +97,14 @@ def main():
     parser.add_argument(
         '--output-hashes', 
         action='store_true', 
-        default=os.getenv('OUTPUT_HASHES', 'false').lower() == 'true',
+        default=os.getenv('OUTPUT_HASHES', 'false').lower() == 'false',
         help='The Output hash for generate list of hash. Can be set via OUTPUT_HASHES env var.'
         )
 
     parser.add_argument(
         '--output-urls', 
         action='store_true', 
-        default=os.getenv('OUTPUT_URLS', 'false').lower() == 'true',
+        default=os.getenv('OUTPUT_URLS', 'false').lower() == 'false',
         help='The Output URLs for generate list of URLs. Can be set via OUTPUT_URLS env var.'
         )
 
