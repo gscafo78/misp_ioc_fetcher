@@ -10,6 +10,7 @@ Author: Giovanni Scafetta
 import requests
 from datetime import datetime
 import ipaddress
+from mispclient.normalize_urls import normalize_urls
 
 class MISPClient:
     """
@@ -24,7 +25,7 @@ class MISPClient:
         verify_cert (bool): Whether to verify SSL certificates.
     """
 
-    __version__ = "1.0.0"
+    __version__ = "1.0.1"
 
     private_networks = [
         ipaddress.ip_network('10.0.0.0/8'),
@@ -149,6 +150,7 @@ class MISPClient:
                 urls.add(cleaned_url)
 
         print(f"Extracted {len(urls)} unique URLs from MISP.")
+        urls = normalize_urls(list(urls))
 
         # Write URLs to a text file
         with open(output_file, 'w') as f:

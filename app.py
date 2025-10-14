@@ -11,6 +11,7 @@ import os
 import logging
 import warnings
 import time
+
 from datetime import datetime, timedelta
 from mispclient.mispclient import MISPClient
 
@@ -43,6 +44,8 @@ def run(logger, args, client):
         logger.info("Fetching URLs enabled.")
         # Fetch and save URLs
         urls = client.get_malicious_urls(args.output_urls_file)
+        
+        # urls = normalize_urls(client.get_malicious_urls(args.output_urls_file))
 
         if not urls:
             logger.warning("No URLs found.")

@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
 """
-Script per normalizzare una lista di URL rimuovendo protocolli e porte,
-ottimizzandoli per una lista di blocco firewall.
-Se ci sono domini di terzo livello uguali, ne scrive uno solo con * da quarto livello in poi.
+Script to normalize a list of URLs by removing protocols and ports,
+optimizing them for a firewall block list.
+If there are identical third-level domains, it writes only one with * from the fourth level onwards.
 """
+__version__ = "1.0.0"
 
-import sys
 from urllib.parse import urlparse
 from collections import defaultdict
 
 
 def normalize_urls(urls):
     """
-    Normalizza una lista di URL rimuovendo protocolli e porte.
-    Se ci sono domini di terzo livello uguali, ne scrive uno solo con * da quarto livello in poi.
+    Normalize a list of URLs by removing protocols and ports.
+    If there are identical third-level domains, it writes only one with * from the fourth level onwards.
 
     Args:
-        urls (list[str]): Lista di URL da normalizzare.
+        urls (list[str]): List of URLs to normalize.
 
     Returns:
-        list[str]: Lista di host normalizzati senza duplicati.
+        list[str]: List of normalized hosts without duplicates.
     """
     hosts = set()
     for url in urls:
@@ -27,76 +27,42 @@ def normalize_urls(urls):
         if not url:
             continue
         if '://' in url:
-            # URL completo con protocollo
+            # Full URL with protocol
             parsed = urlparse(url)
             host = parsed.hostname
             if host:
                 hosts.add(host)
         else:
-            # Possibile host:port o solo host
+            # Possible host:port or just host
             host = url.split(':')[0]
             if host:
                 hosts.add(host)
 
-    # Raggruppa per dominio di terzo livello
+    # Group by third-level domain
     domain_groups = defaultdict(list)
     for host in hosts:
         parts = host.split('.')
         if len(parts) >= 3:
-            # Dominio di terzo livello: es. sub.example.com -> example.com
+            # Third-level domain: e.g. sub.example.com -> example.com
             third_level = '.'.join(parts[-3:])
             domain_groups[third_level].append(host)
         else:
-            # Dominio di secondo livello o meno
+            # Second-level domain or less
             domain_groups[host].append(host)
 
     normalized = set()
     for group, subhosts in domain_groups.items():
         if len(subhosts) > 1:
-            # Più sottodomini, usa wildcard
+            # Multiple subdomains, use wildcard
             parts = group.split('.')
             if len(parts) == 3:
                 wildcard = f"*.{group}"
                 normalized.add(wildcard)
             else:
-                # Per domini più corti, aggiungi come sono
+                # For shorter domains, add as is
                 normalized.update(subhosts)
         else:
-            # Unico host
+            # Single host
             normalized.update(subhosts)
 
     return sorted(list(normalized))
-
-
-def main():
-    urls = ["http://asfwfrwgeg.google.it:8999",
-        "http://asfwfrwgegsadasfd.google.it:4563",
-        "htts://asfwffdwfewfeg.microsoft.com:8999/ciccio/bello.exe",
-        "https://asfwfrwgeg.chebanca.it:8999",
-        "http://as.google.baubau.it:4563",
-        "htts://asfwffdwfewfeg.microsoft.com/ciccio/bello.zip",
-        "http://asfwfrwgeg.google.it:8999",
-        "http://asfwfrwgegsadasfd.google.it:4563",
-        "htts://asfwffdwfewfeg.microsoft.com:8999/ciccio/bello.exe",
-        "http://asfwfrwgeg.google.it:8999",
-        "http://asfwfrwgegsadasfd.google.it:4563",
-        "htts://asfwffdwfewfeg.microsoft.com:8999/ciccio/bello.exe",
-        "http://asfwfrwgeg.google.it:8999",
-        "asfwfrwgegsadasfd.googlexxx.it:4563",
-        "htts://asdasda.xxx.www.asfwffdwfewfeg.microsoft.com:8999/ciccio/bello.exe",
-        "htts://www.asfwffdwfewfeg.microsoft.com:8999/ciccio/bello.exe",
-        "htts://xxx.asfwffdwfewfeg.microsoft.com/ciccio/bello.exe",
-        "htts://www.asfwffdwfewfeg.microsoft.com/ciccio/bello.exe",
-        "1.1.1.1:888"
-        ]
-
-    
-    
-    
-    normalized = normalize_urls(urls)
-    for host in normalized:
-        print(host)
-
-
-if __name__ == "__main__":
-    main()
