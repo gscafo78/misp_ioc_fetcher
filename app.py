@@ -15,7 +15,7 @@ import time
 from datetime import datetime, timedelta
 from mispclient.mispclient import MISPClient
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 
 # ------------------------------------------------------------------------------
 # Module‑level logging configuration
