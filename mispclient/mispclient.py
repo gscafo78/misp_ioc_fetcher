@@ -25,7 +25,7 @@ class MISPClient:
         verify_cert (bool): Whether to verify SSL certificates.
     """
 
-    __version__ = "1.0.1"
+    __version__ = "1.0.2"
 
     private_networks = [
         ipaddress.ip_network('10.0.0.0/8'),
@@ -33,11 +33,17 @@ class MISPClient:
         ipaddress.ip_network('192.168.0.0/16')
     ]
 
-    def __init__(self, misp_url, api_key, start_date, verify_cert):
+    def __init__(self, misp_url, api_key, start_date, verify_cert, whitelist_ip_file=None, whitelist_urls_file=None, whitelist_hashes_file=None):
         self.misp_url = misp_url
         self.api_key = api_key
         self.start_date = start_date
         self.verify_cert = verify_cert
+        self.whitelist_ip_file = whitelist_ip_file
+        self.whitelist_urls_file = whitelist_urls_file
+        self.whitelist_hashes_file = whitelist_hashes_file
+        self.whitelist_ips = self._load_whitelist(whitelist_ip_file) if whitelist_ip_file else set()
+        self.whitelist_urls = self._load_whitelist(whitelist_urls_file) if whitelist_urls_file else set()
+        self.whitelist_hashes = self._load_whitelist(whitelist_hashes_file) if whitelist_hashes_file else set()
 
     @classmethod
     def is_in_private(cls, ip):

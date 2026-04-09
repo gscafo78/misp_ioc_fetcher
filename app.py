@@ -127,6 +127,10 @@ def main():
     default_ip_file = os.path.join(script_dir, 'ioc', 'ioc_ips.txt')
     default_urls_file = os.path.join(script_dir, 'ioc', 'ioc_urls.txt')
     default_hashes_file = os.path.join(script_dir, 'ioc', 'ioc_hashes.txt')
+    default_whitelist_ip_file = os.path.join(script_dir, 'ioc', 'whitelist_ip_file.txt')
+    default_whitelist_urls_file = os.path.join(script_dir, 'ioc', 'whitelist_urls_file.txt')
+    default_whitelist_hashes_file = os.path.join(script_dir, 'ioc', 'whitelist_hashes_file.txt')
+
 
     parser.add_argument(
         '--output-ip-file',
@@ -144,8 +148,23 @@ def main():
         help=f'Output file path for the IOC hashes (default: {default_hashes_file} or OUTPUT_HASHES_FILE env var).'
         )
     parser.add_argument(
-        '--verbose', 
-        action='store_true', 
+        '--whitelist-ip-file',
+        default=os.getenv('WHITELIST_IP_FILE', default_whitelist_ip_file),
+        help='Path to the whitelist file for IPs. IPs in this file will be excluded from IOC lists.'
+        )
+    parser.add_argument(
+        '--whitelist-urls-file',
+        default=os.getenv('WHITELIST_URLS_FILE', default_whitelist_urls_file),
+        help='Path to the whitelist file for URLs. URLs in this file will be excluded from IOC lists.'
+        )
+    parser.add_argument(
+        '--whitelist-hashes-file',
+        default=os.getenv('WHITELIST_HASHES_FILE', default_whitelist_hashes_file),
+        help='Path to the whitelist file for hashes. Hashes in this file will be excluded from IOC lists.'
+        )
+    parser.add_argument(
+        '--verbose',
+        action='store_true',
         help='Enable verbose logging.'
         )
     parser.add_argument(
@@ -169,7 +188,7 @@ def main():
         parser.error("--apykey is required (or set MISP_APY_KEY environment variable)")
 
     # Create MISP client instance
-    client = MISPClient(args.misp_url, args.apykey, args.start_date, args.verycert)
+    client = MISPClient(args.misp_url, args.apykey, args.start_date, args.verycert, args.whitelist_ip_file, args.whitelist_urls_file, args.whitelist_hashes_file)
 
     # Log debug recap of args
     logger.debug(f"Args recap: misp_url={args.misp_url}, \napykey={'*' * len(args.apykey) if args.apykey else None}, \nstart_date={args.start_date}, \nverycert={args.verycert}, \noutput_ip={args.output_ip}, \noutput_urls={args.output_urls}, \noutput_hashes={args.output_hashes}, \noutput_ip_file={args.output_ip_file}, \noutput_urls_file={args.output_urls_file}, \noutput_hashes_file={args.output_hashes_file}, \nupdate_time={args.update_time}")

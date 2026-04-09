@@ -11,6 +11,7 @@ A Python script to fetch malicious Indicators of Compromise (IOCs) such as IP ad
 - Supports selective output for IPs, URLs, and hashes
 - Supports periodic updates
 - Configurable via environment variables or command-line arguments
+- Includes a whitelist for public DNS IP addresses to avoid false positives
 
 ## Requirements
 
@@ -44,6 +45,9 @@ Configure the script using environment variables or command-line arguments:
 - `OUTPUT_IP_FILE`: Output file for IPs (default: `ioc_ips.txt`)
 - `OUTPUT_URLS_FILE`: Output file for URLs (default: `ioc_urls.txt`)
 - `OUTPUT_HASHES_FILE`: Output file for hashes (default: `ioc_hashes.txt`)
+- `WHITELIST_IP_FILE`: Path to whitelist file for IPs (default: `ioc/whitelist_ip_file.txt`)
+- `WHITELIST_URLS_FILE`: Path to whitelist file for URLs (default: `ioc/whitelist_urls_file.txt`)
+- `WHITELIST_HASHES_FILE`: Path to whitelist file for hashes (default: `ioc/whitelist_hashes_file.txt`)
 - `UPDATE_TIME`: Time in seconds to wait between updates (default: 0, no updates)
 
 ### Command-Line Arguments
