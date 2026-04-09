@@ -33,6 +33,27 @@ class MISPClient:
         ipaddress.ip_network('192.168.0.0/16')
     ]
 
+    def _load_whitelist(self, file_path):
+        """
+        Loads a whitelist from a file, returning a set of whitelisted items.
+
+        Args:
+            file_path (str): Path to the whitelist file.
+
+        Returns:
+            set: A set of whitelisted items from the file.
+        """
+        whitelist = set()
+        try:
+            with open(file_path, 'r') as f:
+                for line in f:
+                    line = line.strip()
+                    if line:  # Skip empty lines
+                        whitelist.add(line)
+        except FileNotFoundError:
+            print(f"Warning: Whitelist file {file_path} not found. Using empty whitelist.")
+        return whitelist
+
     def __init__(self, misp_url, api_key, start_date, verify_cert, whitelist_ip_file=None, whitelist_urls_file=None, whitelist_hashes_file=None):
         self.misp_url = misp_url
         self.api_key = api_key
@@ -99,7 +120,10 @@ class MISPClient:
 
         print(f"Extracted {len(ips)} unique IP addresses from MISP.")
 
-        filtered_ips = sorted([ip for ip in ips if not self.is_in_private(ip)])
+        filtered_ips = sorted([ip for ip in ips if not self.is_in_private(ip) and ip not in self.whitelist_ips])
+        whitelisted_count = len(ips) - len(filtered_ips)
+        if whitelisted_count > 0:
+            print(f"Excluded {whitelisted_count} IPs from whitelist.")
 
         # Write IPs to a text file
         with open(output_file, 'w') as f:
@@ -157,14 +181,18 @@ class MISPClient:
 
         print(f"Extracted {len(urls)} unique URLs from MISP.")
         urls = normalize_urls(list(urls))
+        filtered_urls = [url for url in urls if url not in self.whitelist_urls]
+        whitelisted_count = len(urls) - len(filtered_urls)
+        if whitelisted_count > 0:
+            print(f"Excluded {whitelisted_count} URLs from whitelist.")
 
         # Write URLs to a text file
         with open(output_file, 'w') as f:
             f.write('# Last updated ' + datetime.now().strftime('%Y-%m-%d %H:%M') + '\n')
-            for url in sorted(urls):
+            for url in sorted(filtered_urls):
                 f.write(url + '\n')
 
-        return sorted(urls)
+        return sorted(filtered_urls)
 
     def get_malicious_hashes(self, output_file):
         """
@@ -214,12 +242,16 @@ class MISPClient:
                 hashes.add(attr['value'])
 
         print(f"Extracted {len(hashes)} unique hashes from MISP.")
+        filtered_hashes = [h for h in sorted(hashes) if h not in self.whitelist_hashes]
+        whitelisted_count = len(hashes) - len(filtered_hashes)
+        if whitelisted_count > 0:
+            print(f"Excluded {whitelisted_count} hashes from whitelist.")
 
         # Write hashes to a text file
         with open(output_file, 'w') as f:
             f.write('# Last updated ' + datetime.now().strftime('%Y-%m-%d %H:%M') + '\n')
-            for h in sorted(hashes):
+            for h in filtered_hashes:
                 f.write(h + '\n')
 
-        return sorted(hashes)
+        return filtered_hashes
 
